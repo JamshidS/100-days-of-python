@@ -60,6 +60,7 @@ import random
 
 # Hint 14: Ask the user if they want to restart the game. If they answer yes, clear the console and start a new game of blackjack and show the logo from art.py.
 
+game_role = 17
 cards = [11, 2, 3, 4, 5, 6, 7, 9, 10, 10, 10, 10]
 computer_choice = [random.choice(cards), random.choice(cards)]
 user_choice = [random.choice(cards), random.choice(cards)]
@@ -78,7 +79,7 @@ if user_choice[0] == 11 or user_choice[1] == 11:
 if computer_choice[0] == 11 or computer_choice[1] == 11:
     is_comp_has_acs = True
 
-if computer_total == user_total:
+if game_role < computer_total == user_total > game_role:
     print("No one win the game....")
     exit()
 
@@ -102,6 +103,9 @@ while True:
         if user_total > 21:
             if is_user_has_acs:
                 user_total -= 10
+        if user_total == 21:
+            print("You win")
+            exit()
 
         if user_total > 21:
             print("You lost")
@@ -109,14 +113,18 @@ while True:
     else:
         break
 
-index = 2
+computer_index = 2
 while computer_total < 17:
     computer_choice.append(random.choice(cards))
-    computer_new_choice = computer_choice[index]
+    computer_new_choice = computer_choice[computer_index]
     computer_total += computer_new_choice
-    index += 1
+    computer_index += 1
     print("Computer's new card: ", computer_new_choice)
     print("Computer total points: ", computer_total)
+
+    if computer_total == 21:
+        print("You Lost")
+        exit()
     if computer_total > 21:
         print("You win")
         break
