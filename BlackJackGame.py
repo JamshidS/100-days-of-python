@@ -66,12 +66,11 @@ user_choice = [random.choice(cards), random.choice(cards)]
 
 user_total = user_choice[0] + user_choice[1]
 computer_total = computer_choice[0] + computer_choice[1]
+print("computer cards: ", computer_choice)
+print("user cards: ", user_choice)
 
 is_user_has_acs = False
 is_comp_has_acs = False
-
-print("computer cards: ", computer_choice)
-print("user cards: ", user_choice)
 
 if user_choice[0] == 11 or user_choice[1] == 11:
     is_user_has_acs = True
@@ -79,8 +78,9 @@ if user_choice[0] == 11 or user_choice[1] == 11:
 if computer_choice[0] == 11 or computer_choice[1] == 11:
     is_comp_has_acs = True
 
-if computer_total < 17:
-    computer_choice.append(random.choice(cards))
+if computer_total == user_total:
+    print("No one win the game....")
+    exit()
 
 if computer_total == 21:
     print("You lost")
@@ -89,14 +89,34 @@ if user_total == 21:
     print("You wint")
     exit()
 
-user_input = input("Do you want to get another card? y or n: ")
-if user_input == 'y':
-    user_choice.append(random.choice(cards))
-    user_total += user_choice[2]
+user_index = 2
+while True:
+    user_input = input("Do you want to get another card? y or n: ")
+    if user_input == 'y':
+        user_choice.append(random.choice(cards))
+        user_new_choice = user_choice[user_index]
+        user_total += user_new_choice
+        user_index += 1
+        print("Your new card: ", user_new_choice)
+        print("Your total points: ", user_total)
+        if user_total > 21:
+            if is_user_has_acs:
+                user_total -= 10
 
-if user_total > 21:
-    if is_user_has_acs:
-        user_total -= 10
-if user_total > 21:
-    print("You lost")
-    exit()
+        if user_total > 21:
+            print("You lost")
+            exit()
+    else:
+        break
+
+index = 2
+while computer_total < 17:
+    computer_choice.append(random.choice(cards))
+    computer_new_choice = computer_choice[index]
+    computer_total += computer_new_choice
+    index += 1
+    print("Computer's new card: ", computer_new_choice)
+    print("Computer total points: ", computer_total)
+    if computer_total > 21:
+        print("You win")
+        break
