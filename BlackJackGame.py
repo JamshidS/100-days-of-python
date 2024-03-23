@@ -1,6 +1,8 @@
 ############### Blackjack Project #####################
 import random
 
+import Art
+
 # Difficulty Normal 😎: Use all Hints below to complete the project.
 # Difficulty Hard 🤔: Use only Hints 1, 2, 3 to complete the project.
 # Difficulty Extra Hard 😭: Only use Hints 1 & 2 to complete the project.
@@ -60,6 +62,9 @@ import random
 
 # Hint 14: Ask the user if they want to restart the game. If they answer yes, clear the console and start a new game of blackjack and show the logo from art.py.
 
+
+print(Art.logo)
+
 game_role = 17
 cards = [11, 2, 3, 4, 5, 6, 7, 9, 10, 10, 10, 10]
 computer_choice = [random.choice(cards), random.choice(cards)]
@@ -67,28 +72,65 @@ user_choice = [random.choice(cards), random.choice(cards)]
 
 user_total = user_choice[0] + user_choice[1]
 computer_total = computer_choice[0] + computer_choice[1]
-print("computer cards: ", computer_choice)
-print("user cards: ", user_choice)
+computer_first_cart = computer_choice[0]
 
-is_user_has_acs = False
-is_comp_has_acs = False
 
-if user_choice[0] == 11 or user_choice[1] == 11:
-    is_user_has_acs = True
+def main():
+    print("Computer's first card: ", computer_first_cart)
+    print("Your cards: ", user_choice, " Current score: ", user_total)
 
-if computer_choice[0] == 11 or computer_choice[1] == 11:
-    is_comp_has_acs = True
 
-if game_role < computer_total == user_total > game_role:
-    print("No one win the game....")
-    exit()
+def check_draw():
+    if game_role < computer_total == user_total > game_role:
+        print("No one win the game....")
+        exit()
 
-if computer_total == 21:
-    print("You lost")
-    exit()
-if user_total == 21:
-    print("You wint")
-    exit()
+
+def is_user_has_acs():
+    for c in user_choice:
+        if c == 11:
+            return True
+        else:
+            return False
+
+
+def is_comp_has_acs():
+    for c in computer_choice:
+        if c == 11:
+            return True
+        else:
+            return False
+
+
+def check_result():
+    if game_role < computer_total < user_total > game_role:
+        print("Your final hand: ", user_choice, "Final Score: ", user_total)
+        print("Computer's final hand: ", computer_choice, "Final Score: ", computer_total)
+        print("You win")
+        exit()
+    if game_role < user_total < computer_total > game_role:
+        print("Your final hand: ", user_choice, "Final Score: ", user_total)
+        print("Computer's final hand: ", computer_choice, "Final Score: ", computer_total)
+        print("You lost")
+        exit()
+
+    if user_total > 21:
+        print("Your final hand: ", user_choice, "final score: ", user_total)
+        print("Computer's final hand: ", computer_choice, "final score: ", computer_total)
+        print("You lost")
+        exit()
+
+
+def check_black_jack():
+    if computer_total == 21:
+        print("You lost with a BlackJack")
+        exit()
+    if user_total == 21:
+        print("You with a BlackJack")
+        exit()
+
+
+check_black_jack()
 
 user_index = 2
 while True:
@@ -100,17 +142,18 @@ while True:
         user_index += 1
         print("Your new card: ", user_new_choice)
         print("Your total points: ", user_total)
-        if user_total > 21:
-            if is_user_has_acs:
-                user_total -= 10
-        if user_total == 21:
-            print("You win")
-            exit()
+        if 21 < user_total and is_user_has_acs():
+            user_total -= 10
+        check_draw()
+        check_result()
 
-        if user_total > 21:
-            print("You lost")
-            exit()
     else:
+        if user_total > 21 and is_user_has_acs():
+            user_total -= 10
+
+        if user_total < game_role:
+            continue
+        check_result()
         break
 
 computer_index = 2
@@ -122,9 +165,8 @@ while computer_total < 17:
     print("Computer's new card: ", computer_new_choice)
     print("Computer total points: ", computer_total)
 
-    if computer_total == 21:
-        print("You Lost")
-        exit()
+    check_draw()
+    check_black_jack()
     if computer_total > 21:
         print("You win")
         break
