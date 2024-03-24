@@ -67,17 +67,20 @@ print(Art.logo)
 
 game_role = 17
 cards = [11, 2, 3, 4, 5, 6, 7, 9, 10, 10, 10, 10]
-computer_choice = [random.choice(cards), random.choice(cards)]
-user_choice = [random.choice(cards), random.choice(cards)]
+computer_cards = []
+user_cards = []
 
-user_total = user_choice[0] + user_choice[1]
-computer_total = computer_choice[0] + computer_choice[1]
-computer_first_cart = computer_choice[0]
+user_total = 0
+computer_total = 0
+
+
+def deal_card():
+    return random.choice(cards)
 
 
 def main():
-    print("Computer's first card: ", computer_first_cart)
-    print("Your cards: ", user_choice, " Current score: ", user_total)
+    print("Computer's first card: ", computer_cards[0])
+    print("Your cards: ", user_cards, " Current score: ", user_total)
 
 
 def check_draw():
@@ -87,7 +90,7 @@ def check_draw():
 
 
 def is_user_has_acs():
-    for c in user_choice:
+    for c in user_cards:
         if c == 11:
             return True
         else:
@@ -95,7 +98,7 @@ def is_user_has_acs():
 
 
 def is_comp_has_acs():
-    for c in computer_choice:
+    for c in computer_cards:
         if c == 11:
             return True
         else:
@@ -103,20 +106,20 @@ def is_comp_has_acs():
 
 
 def check_result():
-    if game_role < computer_total < user_total > game_role:
-        print("Your final hand: ", user_choice, "Final Score: ", user_total)
-        print("Computer's final hand: ", computer_choice, "Final Score: ", computer_total)
+    if game_role < computer_total < user_total > game_role and user_total < 22:
+        print("Your final hand: ", user_cards, "Final Score: ", user_total)
+        print("Computer's final hand: ", computer_cards, "Final Score: ", computer_total)
         print("You win")
         exit()
-    if game_role < user_total < computer_total > game_role:
-        print("Your final hand: ", user_choice, "Final Score: ", user_total)
-        print("Computer's final hand: ", computer_choice, "Final Score: ", computer_total)
+    if game_role < user_total < computer_total > game_role and computer_total < 22:
+        print("Your final hand: ", user_cards, "Final Score: ", user_total)
+        print("Computer's final hand: ", computer_cards, "Final Score: ", computer_total)
         print("You lost")
         exit()
 
     if user_total > 21:
-        print("Your final hand: ", user_choice, "final score: ", user_total)
-        print("Computer's final hand: ", computer_choice, "final score: ", computer_total)
+        print("Your final hand: ", user_cards, "final score: ", user_total)
+        print("Computer's final hand: ", computer_cards, "final score: ", computer_total)
         print("You lost")
         exit()
 
@@ -130,14 +133,24 @@ def check_black_jack():
         exit()
 
 
+user_cards.append(deal_card())
+user_cards.append(deal_card())
+user_total += user_cards[0] + user_cards[1]
+
+computer_cards.append(deal_card())
+computer_cards.append(deal_card())
+
+computer_total += computer_cards[0] + computer_cards[1]
+
+main()
 check_black_jack()
 
 user_index = 2
 while True:
     user_input = input("Do you want to get another card? y or n: ")
     if user_input == 'y':
-        user_choice.append(random.choice(cards))
-        user_new_choice = user_choice[user_index]
+        user_cards.append(random.choice(cards))
+        user_new_choice = user_cards[user_index]
         user_total += user_new_choice
         user_index += 1
         print("Your new card: ", user_new_choice)
@@ -158,15 +171,18 @@ while True:
 
 computer_index = 2
 while computer_total < 17:
-    computer_choice.append(random.choice(cards))
-    computer_new_choice = computer_choice[computer_index]
+    computer_cards.append(random.choice(cards))
+    computer_new_choice = computer_cards[computer_index]
     computer_total += computer_new_choice
     computer_index += 1
     print("Computer's new card: ", computer_new_choice)
     print("Computer total points: ", computer_total)
 
+    if 21 < computer_total and is_comp_has_acs():
+        computer_total -= 10
     check_draw()
     check_black_jack()
+    check_result()
     if computer_total > 21:
         print("You win")
         break
