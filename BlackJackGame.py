@@ -29,6 +29,18 @@ user_cards = []
 
 user_score = 0
 computer_score = 0
+user_index = 2
+computer_index = 2
+
+
+def reset_game():
+    global user_cards, computer_cards, user_score, computer_score, user_index, computer_index
+    user_cards = []
+    computer_cards = []
+    user_score = 0
+    computer_score = 0
+    user_index = 2
+    computer_index = 2
 
 
 def deal_card():
@@ -43,7 +55,7 @@ def main():
 def check_draw():
     if game_role < computer_score == user_score > game_role:
         print("No one win the game....")
-        exit()
+        return
 
 
 def has_ace(cards):
@@ -59,32 +71,32 @@ def check_result():
     if game_role < computer_score < user_score > game_role and user_score < 22:
         print_results()
         print("You win")
-        exit()
+        return
     if user_score < computer_score > game_role and computer_score < 22:
         print_results()
         print("You lost")
-        exit()
+        return
 
     if user_score > 21:
         print_results()
         print("You lost")
-        exit()
+        return
 
     if computer_score > 21:
         print_results()
         print("You win")
-        exit()
+        return
 
 
 def check_blackjack():
     if computer_score == 21:
         print_results()
         print("You lost with a Blackjack")
-        exit()
+        return
     if user_score == 21:
         print_results()
         print("You won with a Blackjack")
-        exit()
+        return
 
 
 def draw_card_and_update_score(cards, score, index):
@@ -92,51 +104,57 @@ def draw_card_and_update_score(cards, score, index):
     new_card = cards[index]
     score += new_card
     index += 1
-    print("New card: ", new_card)
-    print("Total points: ", score)
     return score, index
 
 
-# Initial deal
-for _ in range(2):
-    user_cards.append(deal_card())
-    computer_cards.append(deal_card())
+def play_game():
+    global user_score, user_index, computer_score, computer_index
+    for _ in range(2):
+        user_cards.append(deal_card())
+        computer_cards.append(deal_card())
 
-user_score = sum(user_cards)
-computer_score = sum(computer_cards)
+    user_score = sum(user_cards)
+    computer_score = sum(computer_cards)
 
-main()
-check_blackjack()
+    main()
+    check_blackjack()
 
-user_index = 2
-computer_index = 2
-while True:
-    user_input = input("Do you want to get another card? y or n: ")
-    if user_input == 'y':
-        user_score, user_index = draw_card_and_update_score(user_cards, user_score, user_index)
-        if user_score > 21 and has_ace(user_cards):
-            user_score -= 10
+    while True:
+        user_input = input("Do you want to get another card? y or n: ")
+        if user_input == 'y':
+            user_score, user_index = draw_card_and_update_score(user_cards, user_score, user_index)
+            if user_score > 21 and has_ace(user_cards):
+                user_score -= 10
+            check_draw()
+            check_blackjack()
+            check_result()
+        else:
+            check_result()
+            check_draw()
+            check_blackjack()
+            if user_score < game_role and computer_score > user_score:
+                print_results()
+                print("You lost the game")
+                return
+            break
+
+    while computer_score < 17:
+        computer_score, computer_index = draw_card_and_update_score(computer_cards, computer_score, computer_index)
+        if computer_score > 21 and has_ace(computer_cards):
+            computer_score -= 10
+
         check_draw()
         check_blackjack()
         check_result()
-    else:
-        check_result()
-        check_draw()
-        check_blackjack()
-        if user_score < game_role and computer_score > user_score:
-            print_results()
-            print("You lost")
-            exit()
-        break
 
-while computer_score < 17:
-    computer_score, computer_index = draw_card_and_update_score(computer_cards, computer_score, computer_index)
-    if computer_score > 21 and has_ace(computer_cards):
-        computer_score -= 10
+    check_result()
     check_draw()
     check_blackjack()
-    check_result()
 
-check_result()
-check_draw()
-check_blackjack()
+
+while True:
+    reset_game()
+    play_game()
+    play_again = input("Do you want to play again? y or no: ")
+    if play_again != 'y':
+        break
