@@ -20,6 +20,7 @@ import Art
 ## Cards are not removed from the deck as they are drawn.
 ## The computer is the dealer.
 
+print(Art.logo)
 
 game_role = 17
 cards = [11, 2, 3, 4, 5, 6, 7, 9, 10, 10, 10, 10]
@@ -45,25 +46,13 @@ def check_draw():
         exit()
 
 
-def is_user_has_acs():
-    for c in user_cards:
-        if c == 11:
-            return True
-        else:
-            return False
-
-
-def is_comp_has_acs():
-    for c in computer_cards:
-        if c == 11:
-            return True
-        else:
-            return False
+def has_ace(cards):
+    return 11 in cards
 
 
 def print_results():
-    print(f"Your final hande: {user_cards}, Final Score: {user_score}")
-    print(f"Computer's final hande: {computer_cards}, Final Score: {computer_score}")
+    print(f"Your final hand: {user_cards}, Final Score: {user_score}")
+    print(f"Computer's final hand: {computer_cards}, Final Score: {computer_score}")
 
 
 def check_result():
@@ -71,8 +60,8 @@ def check_result():
         print_results()
         print("You win")
         exit()
-    if game_role < user_score < computer_score > game_role and computer_score < 22:
-        print()
+    if user_score < computer_score > game_role and computer_score < 22:
+        print_results()
         print("You lost")
         exit()
 
@@ -81,68 +70,73 @@ def check_result():
         print("You lost")
         exit()
 
+    if computer_score > 21:
+        print_results()
+        print("You win")
+        exit()
 
-def check_black_jack():
+
+def check_blackjack():
     if computer_score == 21:
         print_results()
-        print("You lost with a BlackJack")
+        print("You lost with a Blackjack")
         exit()
     if user_score == 21:
         print_results()
-        print("You with a BlackJack")
+        print("You won with a Blackjack")
         exit()
 
 
+def draw_card_and_update_score(cards, score, index):
+    cards.append(deal_card())
+    new_card = cards[index]
+    score += new_card
+    index += 1
+    print("New card: ", new_card)
+    print("Total points: ", score)
+    return score, index
+
+
+# Initial deal
 for _ in range(2):
     user_cards.append(deal_card())
     computer_cards.append(deal_card())
 
-user_score += user_cards[0] + user_cards[1]
-computer_score += computer_cards[0] + computer_cards[1]
+user_score = sum(user_cards)
+computer_score = sum(computer_cards)
 
 main()
-check_black_jack()
+check_blackjack()
 
 user_index = 2
 computer_index = 2
 while True:
     user_input = input("Do you want to get another card? y or n: ")
     if user_input == 'y':
-        user_cards.append(deal_card())
-        user_new_choice = user_cards[user_index]
-        user_score += user_new_choice
-        user_index += 1
-        print("Your new card: ", user_new_choice)
-        print("Your total points: ", user_score)
-
-        if 21 < user_score and is_user_has_acs():
+        user_score, user_index = draw_card_and_update_score(user_cards, user_score, user_index)
+        if user_score > 21 and has_ace(user_cards):
             user_score -= 10
         check_draw()
+        check_blackjack()
         check_result()
-
-    if computer_score < game_role:
-        computer_cards.append(deal_card())
-        computer_new_choice = computer_cards[computer_index]
-        computer_score += computer_new_choice
-        computer_index += 1
-        print("Computer's new card: ", computer_new_choice)
-        print("Computer total points: ", computer_score)
-
-        if 21 < computer_score and is_comp_has_acs():
-            computer_score -= 10
-        check_draw()
-        check_black_jack()
-        check_result()
-        if computer_score > 21:
-            print("You win")
-            break
     else:
-        if user_score > 21 and is_user_has_acs():
-            user_score -= 10
-
-        if user_score < game_role:
-            continue
         check_result()
+        check_draw()
+        check_blackjack()
+        if user_score < game_role and computer_score > user_score:
+            print_results()
+            print("You lost")
+            exit()
         break
 
-print(Art.logo)
+while computer_score < 17:
+    computer_score, computer_index = draw_card_and_update_score(computer_cards, computer_score, computer_index)
+    if computer_score > 21 and has_ace(computer_cards):
+        computer_score -= 10
+    check_draw()
+    check_blackjack()
+    check_result()
+
+check_result()
+check_draw()
+check_blackjack()
