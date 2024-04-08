@@ -20,7 +20,7 @@ Engage with the Community: Join online communities, such as forums or social med
 
 Stay Consistent: Consistency is key to mastering any skill. Even on busy days, try to dedicate some time to the challenge. Small, consistent efforts yield significant results over time.
 
-Resources
+Resource
 Python Documentation: Official Python documentation is an invaluable resource for understanding Python syntax, libraries, and modules.
 Online Tutorials: Websites like Codecademy, Coursera, and freeCodeCamp offer Python tutorials for all skill levels.
 Books: Explore Python programming books such as "Python Crash Course" by Eric Matthes or "Automate the Boring Stuff with Python" by Al Sweigart for in-depth learning.
